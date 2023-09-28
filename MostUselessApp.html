@@ -220,7 +220,7 @@ Version: 1.0.0
         function validateLunch() {
             let lunchTotal = Number(document.getElementById("lunchTotal").value)
             let workTotal = Number(document.getElementById("targetHrs").value)*60 + Number(document.getElementById("targetMin").value)
-            if (lunchTotal < 30 && workTotal > 360 && lunchTotal !== 0) { return showWarning("Usually Lunch can't be less than 30 min. Unless you're waiving it for some reason 🧐. Please update Lunch 'Total' as 0 if you're not taking lunch today 😅!") }
+            if (lunchTotal < 30 && (workTotal > 360 || (lunchTotal > 0 && workTotal <= 360))) { return showWarning("Usually Lunch can't be less than 30 min. Unless you're waiving it for some reason 🧐. Please update Lunch 'Total' as 0 if you'll only work 6 hrs or less and skip lunch 😅!") }
             let start = document.getElementById("startTime").value.split(":")
             let lunch = document.getElementById("lunchStart").value.split(":")
             let diff = Number(lunch[0])*60 + Number(lunch[1]) - Number(start[0])*60 - Number(start[1])
@@ -238,12 +238,15 @@ Version: 1.0.0
             let total = (Number(end[0]) - Number(start[0]))*60 - Number(start[1]) + Number(end[1])
             if (total > 180) { 
                 showToast("Total duration of lunch cannot be greater than 3 hrs = 180 min 😑!"); 
-                endEle.value = (Number(start[0])+3).toString().padStart(2,0) + ":" + start[1]
+                return endEle.value = (Number(start[0])+3).toString().padStart(2,0) + ":" + start[1]
             }
-            else { 
-                totalEle.value = total 
-                calLeaveTime()
-            }
+            if (total < 0) { 
+                showToast("You cannot end lunch before you can start your lunch 😒!"); 
+                endEle.value = (Number(start[0])).toString().padStart(2,0) + ":" + start[1]
+                total = 0
+            }             
+            totalEle.value = total 
+            calLeaveTime()
         }
         function changeTo(th) {
             let start = document.getElementById("lunchStart").value.split(":")
