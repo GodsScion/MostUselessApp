@@ -162,7 +162,7 @@ Version: 1.0.0
         <div class="toast-container top-0 start-50 translate-middle-x p-3">
         <div id="toastMain" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
-            <strong id="toastTitle" class="me-auto">Info</strong>
+            <strong id="toastTitle" class="me-auto">ℹ️ Info</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div id="toastBody" class="toast-body">Invalid Input! Please use arrows and inbuilt buttons.</div>
@@ -185,6 +185,7 @@ Version: 1.0.0
         // if (app !== null) document.getElementById(app).click()
         setInterval(timeLeft,1000)
 
+        // App level functions
         function themeChanger() {
             const themeBtn = document.getElementById("theme")
             let theme = "light"
@@ -199,8 +200,9 @@ Version: 1.0.0
             }
             document.documentElement.setAttribute("data-bs-theme", theme)
         }
-        function showToast(message) {
+        function showToast(message, title = "ℹ️ Info") {
             document.getElementById("toastBody").innerHTML = message
+            document.getElementById("toastTitle").innerHTML = title
             bootstrap.Toast.getOrCreateInstance(document.getElementById("toastMain")).show()
         }
         function showWarning(message) {
@@ -209,13 +211,57 @@ Version: 1.0.0
         }
         function hideWarning() { document.getElementById("result-warning").hidden = true }
 
+
+        // Change Text Cases functions
+        function reset() {
+            let inputText = document.getElementById("text")
+            inputText.value = ""
+            inputText.setAttribute("rows", "1") 
+        }
+        function upper() {document.getElementById('result').innerHTML = document.getElementById("text").value.toUpperCase(); dynamicHeight('result')}
+        function lower() {document.getElementById('result').innerHTML = document.getElementById("text").value.toLowerCase(); dynamicHeight('result')}
+        function startUpper() {
+            let list = document.getElementById("text").value.toLowerCase().split('\n')
+            let text = ""
+            for (sentence of list) {
+                let words = sentence.split(' ')
+                for (word of words) { text = text + word.charAt(0).toUpperCase() + word.substring(1) + " " }
+                text = text.substring(0, text.length - 1) + "\n"
+            }
+            let resultText = document.getElementById('result')
+            resultText.innerHTML = text.slice(0,-1)
+            resultText.setAttribute("rows", list.length)
+        }
+        function copyClipboard() {
+            let copyText = document.getElementById('result');
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            showToast("Copied the text: " + copyText.value);
+        }
+        function dynamicHeight(id) {
+            let inputText = document.getElementById(id)
+            let len = inputText.value.split('\n').length
+            inputText.setAttribute("rows", len)
+        }
+
+
+        // Pre Plan Leaving Time functions
+        function timeCorrecter(hrs) { 
+            if (Number(hrs) >= 24) { 
+                let tomorrow = new Date(new Date() + (Number(hrs)-24)*60*60*1000)
+                return [tomorrow.getHours(), "TOMORROW as in " + tomorrow + ""]
+            } else { 
+                return [hrs, ""] 
+            } 
+        }
         function timeLeft() {
             let currentTime = new Date()
             let leavingTime = document.getElementById("leavingTime").value.split(":")
             let timeLeft = (Number(leavingTime[0]) - currentTime.getHours())*60 + Number(leavingTime[1]) - currentTime.getMinutes()
             document.getElementById("time").innerHTML = currentTime.toLocaleTimeString();
             if (timeLeft > 0) { document.getElementById("timeLeft").innerHTML = `There's still ${Math.floor(timeLeft/60)} h ${timeLeft%60} m ${59 - currentTime.getSeconds()} s left 😄!`}
-            else { document.getElementById("timeLeft").innerHTML = `What are you still waiting for, isn't it time to leave 😁?`; showToast("🔔") }
+            else { document.getElementById("timeLeft").innerHTML = `What are you still waiting for, isn't it time to leave 😁?`; showToast("Let's Go...❗❗","<h2>🔔</h2>") }
         }
         function validateLunch() {
             let lunchTotal = Number(document.getElementById("lunchTotal").value)
@@ -252,9 +298,9 @@ Version: 1.0.0
             let start = document.getElementById("lunchStart").value.split(":")
             let total = Number(document.getElementById("lunchTotal").value)
             let min = Number(start[1]) + total
-            let hrs = Number(start[0]) + Math.floor(min/60)
-            document.getElementById("lunchEnd").value = hrs.toString().padStart(2,0) + ":" + (min%60).toString().padStart(2,0)
-            time24("lunchEnd")
+            let hrs = timeCorrecter( Number(start[0]) + Math.floor(min/60) )
+            document.getElementById("lunchEnd").value = hrs[0].toString().padStart(2,0) + ":" + (min%60).toString().padStart(2,0)
+            time24("lunchEnd", null, hrs[1])
             validateLunch()
         }
         function calLeaveTime() {
@@ -265,19 +311,20 @@ Version: 1.0.0
             const leavingTimeEle = document.getElementById("leavingTime")
             let start = startEle.value.split(":")
             let min = Number(start[1]) + Number(targetMinEle.value) + Number(lunchTotalEle.value)
-            let hrs = Number(start[0]) + Number(targetHrsEle.value) + Math.floor(min/60)
-            leavingTimeEle.value = hrs.toString().padStart(2,0) + ":" + (min%60).toString().padStart(2,0)
-            time24("leavingTime")
+            let hrs = timeCorrecter( Number(start[0]) + Number(targetHrsEle.value) + Math.floor(min/60) )
+            console.log(hrs);
+            leavingTimeEle.value = hrs[0].toString().padStart(2,0) + ":" + (min%60).toString().padStart(2,0)
+            time24("leavingTime", null, hrs[1])
             validateLunch()
         }
-        function time24(id, th) { 
+        function time24(id, th, tomorrow = "") { 
             const hmEle = document.getElementById(id)
             let hm = hmEle.value.split(':')
             if (hm.length !== 2 || isNaN(hm[0]) || isNaN(hm[1]) || Number(hm[0]) > 23 || Number(hm[0]) < 0 || Number(hm[1]) > 59 || Number(hm[1]) < 0) {
                 hmEle.value = th.previousValue || "00:00"
                 showToast("Seriously 😒? Use arrows ⬆️⬇️ or click on 🕒 to change time. Only enter valid inputs.")
             }
-            document.getElementById(id+'-24').innerHTML = hmEle.value + " Military time" 
+            document.getElementById(id+'-24').innerHTML = hmEle.value + " Military time" + tomorrow 
         }
         function resetAll() {
             document.getElementById("startTime").value = "09:00"
@@ -292,39 +339,7 @@ Version: 1.0.0
             document.getElementById("leavingTime").value = "17:30"
             document.getElementById("leavingTime-24").innerHTML = "17:30 Military time"
         }
-
-        function reset() {
-            let inputText = document.getElementById("text")
-            inputText.value = ""
-            inputText.setAttribute("rows", "1") 
-        }
-        function upper() {document.getElementById('result').innerHTML = document.getElementById("text").value.toUpperCase(); dynamicHeight('result')}
-        function lower() {document.getElementById('result').innerHTML = document.getElementById("text").value.toLowerCase(); dynamicHeight('result')}
-        function startUpper() {
-            let list = document.getElementById("text").value.toLowerCase().split('\n')
-            let text = ""
-            for (sentence of list) {
-                let words = sentence.split(' ')
-                for (word of words) { text = text + word.charAt(0).toUpperCase() + word.substring(1) + " " }
-                text = text.substring(0, text.length - 1) + "\n"
-            }
-            let resultText = document.getElementById('result')
-            resultText.innerHTML = text.slice(0,-1)
-            resultText.setAttribute("rows", list.length)
-        }
-        function copyClipboard() {
-            let copyText = document.getElementById('result');
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(copyText.value);
-            showToast("Copied the text: " + copyText.value);
-        }
-        function dynamicHeight(id) {
-            let inputText = document.getElementById(id)
-            let len = inputText.value.split('\n').length
-            inputText.setAttribute("rows", len)
-        }
     </script>
-    
+
 </body>
 </html>
