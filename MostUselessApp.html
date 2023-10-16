@@ -247,6 +247,10 @@ Version: 1.0.0
 
 
         // Pre Plan Leaving Time functions
+        let alerted = false
+        function alertOnce() {
+            if (!alerted) { alert("It's time!"); alerted = true; }
+        }
         function timeCorrecter(hrs) { 
             if (Number(hrs) >= 24) { 
                 let tomorrow = new Date(new Date() + (Number(hrs)-24)*60*60*1000)
@@ -261,7 +265,7 @@ Version: 1.0.0
             let timeLeft = (Number(leavingTime[0]) - currentTime.getHours())*60 + Number(leavingTime[1]) - currentTime.getMinutes()
             document.getElementById("time").innerHTML = currentTime.toLocaleTimeString();
             if (timeLeft > 0) { document.getElementById("timeLeft").innerHTML = `There's still ${Math.floor(timeLeft/60)} h ${timeLeft%60} m ${59 - currentTime.getSeconds()} s left 😄!`}
-            else { document.getElementById("timeLeft").innerHTML = `What are you still waiting for, isn't it time to leave 😁?`; showToast("Let's Go...❗❗","<h2>🔔</h2>") }
+            else { document.getElementById("timeLeft").innerHTML = `What are you still waiting for, isn't it time to leave 😁?`; alertOnce(); showToast("Let's Go...❗❗","<h2>🔔</h2>") }
         }
         function validateLunch() {
             let lunchTotal = Number(document.getElementById("lunchTotal").value)
