@@ -91,11 +91,11 @@ Version: 1.0.0
 
                     <label for="startTime" class="form-label">When did you enter office?</label>
                     <div class="d-flex">
-                        <input id="startTime" type="time" class="form-control w-25 p-1" value="09:00"
+                        <input id="startTime" type="time" class="form-control w-25 p-1" value="08:00"
                         onfocus="this.previousValue = this.value"
                         onkeydown="this.previousValue = this.value"
                         oninput="calLeaveTime(); time24('startTime', this)">
-                        <p id="startTime-24" class="m-2">09:00 Military time</p>
+                        <p id="startTime-24" class="m-2">08:00 Military time</p>
                     </div>
                     <br>
 
@@ -146,8 +146,8 @@ Version: 1.0.0
                     <br>
                     <label for="leavingTime">From your inputs, your leaving time could be 🚗💨🏢 </label>
                     <div class="d-flex mb-3">
-                        <input id="leavingTime" type="time" class="form-control w-25 p-1 border-primary" value="17:30" readonly>
-                        <p id="leavingTime-24" class="m-2">17:30 Military time</p>
+                        <input id="leavingTime" type="time" class="form-control w-25 p-1 border-primary" value="16:30" readonly>
+                        <p id="leavingTime-24" class="m-2">16:30 Military time</p>
                     </div>
                     <h3 id="timeLeft" class="mb-3"></h3>
                     <div id="result-warning" hidden>
@@ -332,8 +332,8 @@ Version: 1.0.0
             document.getElementById(id+'-24').innerHTML = hmEle.value + " Military time" + tomorrow 
         }
         function resetAll() {
-            document.getElementById("startTime").value = "09:00"
-            document.getElementById("startTime-24").innerHTML = "09:00 Military time"
+            document.getElementById("startTime").value = "08:00"
+            document.getElementById("startTime-24").innerHTML = "08:00 Military time"
             document.getElementById("targetHrs").value = "8"
             document.getElementById("targetMin").value = "00"
             document.getElementById("lunchTotal").value = "30"
@@ -341,8 +341,8 @@ Version: 1.0.0
             document.getElementById("lunchStart-24").innerHTML = "12:00 Military time"
             document.getElementById("lunchEnd").value = "12:30"
             document.getElementById("lunchEnd-24").innerHTML = "12:30 Military time"
-            document.getElementById("leavingTime").value = "17:30"
-            document.getElementById("leavingTime-24").innerHTML = "17:30 Military time"
+            document.getElementById("leavingTime").value = "16:30"
+            document.getElementById("leavingTime-24").innerHTML = "16:30 Military time"
         }
     </script>
 
