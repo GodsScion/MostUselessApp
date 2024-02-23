@@ -4,5 +4,3 @@ Well, I don't know why anyone would even take a look at this 😐. But, if you'r
 # Built With
 [![JavaScript](https://skillicons.dev/icons?i=js&perline=1)](https://developer.mozilla.org/en-US/docs/Web/javascript)  [![HTML](https://skillicons.dev/icons?i=html&perline=1)](https://developer.mozilla.org/en-US/docs/Web/HTML)  [![CSS](https://skillicons.dev/icons?i=css&perline=1)](https://developer.mozilla.org/en-US/docs/Web/CSS)  [![Bootstrap](https://skillicons.dev/icons?i=bootstrap&perline=1)](https://getbootstrap.com/) 
 
-# How it looks like
-<iframe src="https://godsscion.github.io/Most_Useless_App/" height="200" width="300" title="Iframe Example"></iframe>
