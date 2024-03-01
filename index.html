@@ -173,7 +173,10 @@ Version: 1.0.0
             <strong id="toastTitle" class="me-auto">ℹ️ Info</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
-            <div id="toastBody" class="toast-body">Invalid Input! Please use arrows and inbuilt buttons.</div>
+            <div class="d-flex flex-row justify-content-between align-items-baseline toast-body">
+                <p id="toastBody">Invalid Input! Please use arrows ⬆️⬇️ and inbuilt buttons.</p>
+                <button id="toastButton" type="button" class="btn btn-danger" data-bs-dismiss="toast" aria-label="Close" onclick="pauseAlerts()">OkOk! Calm Down!</button>
+            </div>
         </div>
         </div>
     </div>
@@ -208,9 +211,10 @@ Version: 1.0.0
             }
             document.documentElement.setAttribute("data-bs-theme", theme)
         }
-        function showToast(message, title = "ℹ️ Info") {
+        function showToast(message, title = "ℹ️ Info", hideButton = true) {
             document.getElementById("toastBody").innerHTML = message
             document.getElementById("toastTitle").innerHTML = title
+            document.getElementById("toastButton").hidden = hideButton
             bootstrap.Toast.getOrCreateInstance(document.getElementById("toastMain")).show()
         }
         function showWarning(message) {
@@ -255,10 +259,8 @@ Version: 1.0.0
 
 
         // Pre Plan Leaving Time functions
-        let alerted = false
-        function alertOnce() {
-            if (!alerted) { alert("It's time!"); alerted = true; }
-        }
+        let pauseAlert = false
+        function pauseAlerts() { pauseAlert = true }
         function timeCorrecter(hrs) { 
             if (Number(hrs) >= 24) { 
                 let tomorrow = new Date(new Date() + (Number(hrs)-24)*60*60*1000)
@@ -272,8 +274,12 @@ Version: 1.0.0
             let leavingTime = document.getElementById("leavingTime").value.split(":")
             let timeLeft = (Number(leavingTime[0]) - currentTime.getHours())*60 + Number(leavingTime[1]) - currentTime.getMinutes()
             document.getElementById("time").innerHTML = currentTime.toLocaleTimeString();
-            if (timeLeft > 0) { document.getElementById("timeLeft").innerHTML = `There's still ${Math.floor(timeLeft/60)} h ${timeLeft%60} m ${59 - currentTime.getSeconds()} s left 😄!`}
-            else { document.getElementById("timeLeft").innerHTML = `What are you still waiting for, isn't it time to leave 😁?`; alertOnce(); showToast("Let's Go...❗❗","<h2>🔔</h2>") }
+            if (timeLeft > 0) { 
+                document.getElementById("timeLeft").innerHTML = `There's still ${Math.floor(timeLeft/60)} h ${timeLeft%60} m ${59 - currentTime.getSeconds()} s left 😄!`
+            } else { 
+                document.getElementById("timeLeft").innerHTML = `What are you still waiting for, isn't it time to leave 😁?`; 
+                if (!pauseAlert) { showToast("Let's Go...❗❗","<h2>🔔</h2>",false) }
+            }
         }
         function validateLunch() {
             let lunchTotal = Number(document.getElementById("lunchTotal").value)
@@ -351,6 +357,7 @@ Version: 1.0.0
             document.getElementById("lunchEnd-24").innerHTML = "12:30 Military time"
             document.getElementById("leavingTime").value = "16:30"
             document.getElementById("leavingTime-24").innerHTML = "16:30 Military time"
+            pauseAlert = false
             hideWarning()
         }
     </script>
