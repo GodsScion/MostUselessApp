@@ -1,0 +1,42 @@
+.heading { 
+    background-color: #4c0bce;
+    color: white;
+}
+
+.w-10 { width: 10%; }
+
+.tab-border {
+    border: 2px;
+    border-color: #0d6efd;
+    border-style: solid;
+}
+
+.tooltip-text {
+    background: linear-gradient(120deg, #4c0bce 85%, #0d6efd);
+    color: white;
+    text-align: center;
+
+    border-radius: 5px;
+    position: absolute;
+    z-index: 1;
+
+    transition: all 0.3s;
+}
+
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -10px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent #4c0bce transparent transparent;
+  }
+
+.list-vertical {
+    display: flex;
+    align-items: center;
+
+    /* transition: all 0.3s; */
+}
