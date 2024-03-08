@@ -4,17 +4,17 @@ const messages = [
     {title: "Hold on, is this real 😵‍💫?", message: "I wasn't sure anyone would find this! Are you lost 🤨?"},
     {title: "You must be really bored 😏", message: "We get it, existential dread is a real thing. But seriously, there's gotta be something better to do... right 😂?"},
     {title: "Alert❗", message: "A single user has been detected! Prepare the... confetti 🎊? Wait, I don't actually have confetti 😅."},
-    {title: "Mom! Look, I have a visitor 😃!", message: "Pssst, don't tell her it's the only one (just you) 🤫."},
+    {title: "Mom! Look, I have a visitor 😃!", message: "Pssst, don't tell her, you're the only active visitor 🤫."},
     {title: "🚨 BREAKING NEWS 🚨 Website receives first visitor in the history of ever.", message: "More at 11 👨🏼‍💼📰... or whenever we figure out how to write news articles 🤓😅."},
     {title: "Would you like a participation trophy 🏆 for finding this?", message: "Just kidding (mostly). I'm happy to have you 😁..."},
     {title: "ℹ️ Info", message: "This notification is the most exciting thing that will happen here all day 🥱. Maybe."},
     {title: "Wait! What 😲!!?", message: "Is someone actually using this website 🤯?"}, 
 ]
 let todays_message = messages[Math.floor(Math.random() * messages.length)]
-showToast(todays_message.message, todays_message.title)
+showToast("<h6>"+todays_message.message+"</h6>", "<h5>"+todays_message.title+"</h5>")
 
 setInterval(timeLeft,1000)
-setTimeout(showTip,2500)
+setTimeout(showTip,8000)
 
 // App level functions
 function themeChanger() {
@@ -45,8 +45,19 @@ function hideWarning() { document.getElementById("result-warning").hidden = true
 function showTip() {
     const tooltip = document.getElementById("tooltip-all")
     tooltip.hidden = false
-    setTimeout(() => tooltip.hidden = true, 5000)
+    setTimeout(() => {
+        tooltip.hidden = true; 
+        setTimeout(turnOnAlarmFirstTime, 2000)
+    }, 7000)
 }
+function turnOnAlarmFirstTime() {
+    let app = localStorage.getItem("app")
+    if (app !== "changeText" && !AlarmOn) {
+        showToast("Alarm will be turn On ⏰🔔 in 6 secs!","ℹ️ Info")
+        setTimeout(() => {AlarmOn = false; toggleAlarm()}, 6000)
+    }
+}
+
 
 // Change Text Cases functions
 function reset() {
@@ -59,9 +70,9 @@ function lower() {document.getElementById('result').innerHTML = document.getElem
 function startUpper() {
     let list = document.getElementById("text").value.toLowerCase().split('\n')
     let text = ""
-    for (sentence of list) {
+    for (let sentence of list) {
         let words = sentence.split(' ')
-        for (word of words) { text = text + word.charAt(0).toUpperCase() + word.substring(1) + " " }
+        for (let word of words) { text = text + word.charAt(0).toUpperCase() + word.substring(1) + " " }
         text = text.substring(0, text.length - 1) + "\n"
     }
     let resultText = document.getElementById('result')
@@ -83,8 +94,21 @@ function dynamicHeight(id) {
 
 
 // Pre Plan Leaving Time functions
-let pauseAlert = false
-function pauseAlerts() { pauseAlert = true }
+let AlarmOn = false
+function toggleAlarm() { 
+    AlarmOn = !AlarmOn 
+    if (AlarmOn) {
+        const btn = document.getElementById("toggleAlarmBtn")
+        showToast("Alarm is On ⏰🔔","ℹ️ Info") 
+        btn.innerHTML = "Turn Off Alarm ⏰🔕"
+        btn.classList.replace("btn-secondary","btn-warning")
+    } else {
+        const btn = document.getElementById("toggleAlarmBtn")
+        showToast("Alarm is Off ⏰🔕","ℹ️ Info") 
+        btn.innerHTML = "Turn On Alarm ⏰🔔"
+        btn.classList.replace("btn-warning","btn-secondary")
+    }
+}
 function timeCorrecter(hrs) { 
     if (Number(hrs) >= 24) { 
         let tomorrow = new Date(new Date() + (Number(hrs)-24)*60*60*1000)
@@ -102,7 +126,7 @@ function timeLeft() {
         document.getElementById("timeLeft").innerHTML = `There's still ${Math.floor(timeLeft/60)} h ${timeLeft%60} m ${59 - currentTime.getSeconds()} s left 😄!`
     } else { 
         document.getElementById("timeLeft").innerHTML = `What are you still waiting for, isn't it time to leave 😁?`; 
-        if (!pauseAlert) { showToast("Let's Go...❗❗","<h2>🔔</h2>",false) }
+        if (AlarmOn) { showToast("Let's Go...❗❗","<h2>🔔</h2>",false) }
     }
 }
 function validateLunch() {
@@ -181,6 +205,6 @@ function resetAll() {
     document.getElementById("lunchEnd-24").innerHTML = "12:30 Military time"
     document.getElementById("leavingTime").value = "16:30"
     document.getElementById("leavingTime-24").innerHTML = "16:30 Military time"
-    pauseAlert = false
+    AlarmOn = false
     hideWarning()
 }

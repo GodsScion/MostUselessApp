@@ -16,7 +16,7 @@ Version: 1.0.0
 </head>
 
 <body>
-    <header class="nav-bar heading mb-4 p-2">
+    <header class="nav-bar bg-color mb-4 p-2">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
                 <h1>Welcome to Most Useless App 😐</h1>
@@ -54,7 +54,13 @@ Version: 1.0.0
                         </button>
                     </li>
                     <li id="tooltip-all" class="nav-item list-vertical me-2 mb-1" hidden>
-                        <span class="tooltip-text p-2">👈🏼 Did you try them all?</span>
+                    <div class="tooltip-text p-2 pe-4 d-flex bg-color">
+                        <h1>👈🏼</h1>
+                        <div class="d-flex flex-column" >
+                            <span style="text-align: left;">Since you are here anyways</span>
+                            <span style="text-align: left;">Why not try them all?</span>
+                        </div>
+                    </div>
                     </li>
                 </ul>
                 
@@ -88,7 +94,7 @@ Version: 1.0.0
                 <div class="tab-pane fade show active" id="calculateTime-tab" role="tabpanel" aria-labelledby="calculateTime" tabindex="0">
                     <div class="d-flex justify-content-between">
                         <h2 class="flex-lg-fill me-2">Plan your Work-Life balance 🕰️</h2>
-                        <!-- <button id="toogleAlarmBtn" class="btn btn-secondary mb-1 me-2 flex-lg-fill" type="button" onclick="toogleAlarm()" style="max-width: fit-content;">Turn On Alarm ⏰</button> -->
+                        <button id="toggleAlarmBtn" class="btn btn-secondary mb-1 me-2 flex-lg-fill" type="button" onclick="toggleAlarm()" style="max-width: fit-content;">Turn On Alarm ⏰🔔</button>
                         <button class="btn btn-danger mb-1 flex-lg-fill" type="button" onclick="resetAll()" style="max-width: fit-content;">Reset to Default 📆</button>
                         <div class="flex-lg-fill"></div>
                     </div>
@@ -173,7 +179,7 @@ Version: 1.0.0
             </div>
             <div class="d-flex flex-row justify-content-between align-items-baseline toast-body">
                 <p id="toastBody">Invalid Input! Please use arrows ⬆️⬇️ and inbuilt buttons.</p>
-                <button id="toastButton" type="button" class="btn btn-danger" data-bs-dismiss="toast" aria-label="Close" onclick="pauseAlerts()">OkOk! Calm Down!</button>
+                <button id="toastButton" type="button" class="btn btn-danger" data-bs-dismiss="toast" aria-label="Close" onclick="toggleAlarm()">OkOk! Calm Down!</button>
             </div>
         </div>
         </div>
