@@ -1,5 +1,18 @@
 // let app = localStorage.getItem("app")
 // if (app !== null) document.getElementById(app).click() 
+const messages = [
+    {title: "Hold on, is this real 😵‍💫?", message: "I wasn't sure anyone would find this! Are you lost 🤨?"},
+    {title: "You must be really bored 😏", message: "We get it, existential dread is a real thing. But seriously, there's gotta be something better to do... right 😂?"},
+    {title: "Alert❗", message: "A single user has been detected! Prepare the... confetti 🎊? Wait, I don't actually have confetti 😅."},
+    {title: "Mom! Look, I have a visitor 😃!", message: "Pssst, don't tell her it's the only one (just you) 🤫."},
+    {title: "🚨 BREAKING NEWS 🚨 Website receives first visitor in the history of ever.", message: "More at 11 👨🏼‍💼📰... or whenever we figure out how to write news articles 🤓😅."},
+    {title: "Would you like a participation trophy 🏆 for finding this?", message: "Just kidding (mostly). I'm happy to have you 😁..."},
+    {title: "ℹ️ Info", message: "This notification is the most exciting thing that will happen here all day 🥱. Maybe."},
+    {title: "Wait! What 😲!!?", message: "Is someone actually using this website 🤯?"}, 
+]
+let todays_message = messages[Math.floor(Math.random() * messages.length)]
+showToast(todays_message.message, todays_message.title)
+
 setInterval(timeLeft,1000)
 setTimeout(showTip,2500)
 
