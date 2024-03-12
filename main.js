@@ -53,7 +53,7 @@ function showTip() {
 function turnOnAlarmFirstTime() {
     let app = localStorage.getItem("app")
     if (app !== "changeText" && !AlarmOn) {
-        showToast("Alarm will be turn On ⏰🔔 in 6 secs!","ℹ️ Info")
+        showToast("Alarm will be turned On ⏰🔔 in few secs!","ℹ️ Info")
         setTimeout(() => {AlarmOn = false; toggleAlarm()}, 6000)
     }
 }
