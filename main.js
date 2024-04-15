@@ -22,7 +22,7 @@ function themeChanger() {
     let theme = "light"
     if (themeBtn.innerHTML.search("Da") > -1) { theme = "dark" }
     localStorage.setItem("theme", theme)
-    if (theme === "dark") {
+    if (theme === "light") {
         themeBtn.innerHTML = "☀️ Light Theme"
         themeBtn.classList.replace("btn-dark", "btn-light")
     } else {
