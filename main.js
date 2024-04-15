@@ -20,7 +20,7 @@ setTimeout(showTip,8000)
 function themeChanger() {
     const themeBtn = document.getElementById("theme")
     let theme = "light"
-    if (themeBtn.innerHTML.search("Da") > -1) { theme = "dark" }
+    if (themeBtn.innerHTML.search("Li") > -1) { theme = "dark" }
     localStorage.setItem("theme", theme)
     if (theme === "light") {
         themeBtn.innerHTML = "☀️ Light Theme"
