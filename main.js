@@ -63,7 +63,10 @@ function turnOnAlarmFirstTime() {
 function reset() {
     let inputText = document.getElementById("text")
     inputText.value = ""
-    inputText.setAttribute("rows", "1") 
+    inputText.setAttribute("rows", "1")
+    inputText = document.getElementById('result')
+    inputText.innerHTML = ""
+    inputText.setAttribute("rows", "1")
 }
 function upper() {document.getElementById('result').innerHTML = document.getElementById("text").value.toUpperCase(); dynamicHeight('result')}
 function lower() {document.getElementById('result').innerHTML = document.getElementById("text").value.toLowerCase(); dynamicHeight('result')}
