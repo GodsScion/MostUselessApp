@@ -136,12 +136,12 @@ function validateLunch() {
     let lunchTotal = Number(document.getElementById("lunchTotal").value)
     let workTotal = Number(document.getElementById("targetHrs").value)*60 + Number(document.getElementById("targetMin").value)
     let start = document.getElementById("startTime").value.split(":")
-    document.getElementById("suggestLunch").innerHTML = `Recommended to start Lunch in between ${timeCorrecter(Number(start[0])+3)[0]}:${start[1]} and ${timeCorrecter(Number(start[0])+5)[0]}:${start[1]}`
+    document.getElementById("suggestLunch").innerHTML = `Recommended to start Lunch after ${timeCorrecter(Number(start[0])+3)[0]}:${start[1]} and before ${timeCorrecter(Number(start[0])+5)[0]}:${start[1]}`
     let lunch = document.getElementById("lunchStart").value.split(":")
     let diff = Number(lunch[0])*60 + Number(lunch[1]) - Number(start[0])*60 - Number(start[1])
     if (lunchTotal < 30 && (workTotal > 360 || (lunchTotal > 0 && workTotal <= 360))) { return showWarning("Usually Lunch can't be less than 30 min. Unless you're waiving it for some reason 🧐. Please update Lunch 'Total' as 0 if you'll only work 6 hrs or less and skip lunch 😅!") }
     if (diff < 0) { return showWarning("Lunch should start after your Office entry time 😒!") }
-    if (diff > 300 && workTotal > 360) { return showWarning(`Lunch should start within 5 hrs from entry of your office 🧐. Your current difference is ${Math.floor(diff/60)} hrs ${(diff%60).toString().padStart(2,0)} min 🥱. Unless you're waving your lunch time and only working for max 6 hrs today!`) }
+    if (diff >= 300 && workTotal > 360) { return showWarning(`Lunch should start before 5 hrs from entry of your office 🧐. Your current difference is ${Math.floor(diff/60)} hrs ${(diff%60).toString().padStart(2,0)} min 🥱. Unless you're waving your lunch time and only working for max 6 hrs today!`) }
     if (diff < 180) { return showWarning(`It's recommended to start Lunch at least after 3 hrs from entry of your office 🧐. Your current difference is only ${Math.floor(diff/60)} hrs ${(diff%60).toString().padStart(2,0)} min 😑`) }
     return hideWarning()
 }
