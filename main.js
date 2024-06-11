@@ -126,7 +126,7 @@ function timeLeft() {
     let timeLeft = (Number(leavingTime[0]) - currentTime.getHours())*60 + Number(leavingTime[1]) - currentTime.getMinutes()
     document.getElementById("time").innerHTML = currentTime.toLocaleTimeString();
     if (timeLeft > 0) { 
-        document.getElementById("timeLeft").innerHTML = `Hustle! Hustle! There's only ${Math.floor(timeLeft/60)} h ${timeLeft%60} m ${59 - currentTime.getSeconds()} s left 😄!`
+        document.getElementById("timeLeft").innerHTML = `Hustle! Hustle! There's only ${Math.floor(timeLeft/60)} h ${timeLeft%60} m ${59 - currentTime.getSeconds()} s left 🧑🏻‍💻!`
     } else { 
         document.getElementById("timeLeft").innerHTML = `What are you still waiting for, isn't it time to leave 😁?`; 
         if (AlarmOn) { showToast("Let's Go...❗❗","<h2>🔔</h2>",false) }
