@@ -82,6 +82,19 @@ function startUpper() {
     resultText.innerHTML = text.slice(0,-1)
     resultText.setAttribute("rows", list.length)
 }
+function random() {
+    let text = document.getElementById("text").value;
+    let output = "";
+    for (let i=0; i<text.length; i++) {
+        if (Math.random() > 0.5) { 
+            output += text.charAt(i).toUpperCase();
+        } else { 
+            output += text.charAt(i).toLowerCase();
+        }
+    }
+    document.getElementById('result').innerHTML = output;
+    dynamicHeight('result');
+}
 function copyClipboard() {
     let copyText = document.getElementById('result');
     copyText.select();

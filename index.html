@@ -69,16 +69,17 @@ Version: 1.1.2
             <div class="tab-content" id="pills-tabContent">
                 <!-- CHANGE TEXT CASES -->
                 <div class="tab-pane fade show active" id="changeText-tab" role="tabpanel" aria-labelledby="changeText" tabindex="0">
-                    <h2>Oops! Did your text take a wild ride on the Caps Lock rollercoaster? 🫠</h2>
-                    <p>No problem. We've all been there, just drop your jumbled mess into the box below, hit the magic button for your desired case, and watch as we work our text-wrangling wonders.</p>
+                    <h2>Caps Lock Chaos?</h2>
+                    <p>Did your text take a wild ride on the Caps Lock rollercoaster? No problem. We've all been there 🫠, just drop your jumbled mess into the box below, hit the magic button for your desired case, and watch as we work our text-wrangling wonders.</p>
                     <br>
                     <label class="form-label" for="text">Pop your text in the box below 👇</label>
                     <textarea class="form-control mb-3 p-1" id="text" name="text" oninput="dynamicHeight('text')"></textarea>
                     <div class="d-flex">
-                        <button onclick="upper()" class="btn btn-primary me-3">ALL UPPERCASE</button>
-                        <button onclick="lower()" class="btn btn-primary me-3">all lowercase</button>
-                        <button onclick="startUpper()" class="btn btn-primary me-3">First Letters Of Words Upper</button>
-                        <button onclick="reset()" class="btn btn-danger">Reset Text 🗑️</button>
+                        <button onclick="upper()" class="btn btn-primary me-3" aria-label="upper case button">ALL UPPERCASE</button>
+                        <button onclick="lower()" class="btn btn-primary me-3" aria-label="lower case button">all lowercase</button>
+                        <button onclick="startUpper()" class="btn btn-primary me-3" aria-label="first letters of words upper case button">First Letters Of Words Upper</button>
+                        <button onclick="random()" class="btn btn-primary me-3" aria-label="random case button">R@nD#m 💀</button>
+                        <button onclick="reset()" class="btn btn-danger" aria-label="reset text button">Reset Text 🗑️</button>
                     </div>
                     <br>
                     <br>
