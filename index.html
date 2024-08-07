@@ -43,9 +43,14 @@ Version: 1.1.2
         <main>
             <header>
                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                    <li class="nav-item list-vertical me-2 mb-1" role="presentation">
+                    <li class="nav-item list-vertical me-2 mb-1 col-sm-6" role="presentation">
                         <button class="nav-link col-12 tab-border active" id="changeText" data-bs-toggle="pill" data-bs-target="#changeText-tab" type="button" role="tab" aria-controls="changeText-tab" aria-selected="true" onclick="localStorage.setItem('app', 'changeText')">
                             Change Text Cases 🔠🔡
+                        </button>
+                    </li>
+                    <li class="nav-item list-vertical me-2 mb-1 col-sm-6" role="presentation">
+                        <button class="nav-link col-12 tab-border" id="tossCoin" data-bs-toggle="pill" data-bs-target="#tossCoin-tab" type="button" role="tab" aria-controls="tossCoin" aria-selected="false"  onclick="localStorage.setItem('app', 'tossCoin')">
+                            Toss a Coin 🪙
                         </button>
                     </li>
                     <li class="nav-item list-vertical me-3 mb-1" role="presentation">
@@ -91,6 +96,44 @@ Version: 1.1.2
                     
                 </div>
 
+                <!-- TOSS A COIN -->
+                <div id="tossCoin-tab" class="tab-pane fade" role="tabpanel" aria-labelledby="tossCoin" tabindex="0">
+                    <h2>Toss a Coin 🪙</h2>
+                    <p>Click the coin or the "Toss" button to flip the coin!</p>
+
+                    <button id="tossButton" class="btn btn-primary">Toss</button>
+                    
+                    <div class="d-flex justify-content-center align-items-center mb-4">
+                      <div id="coin-container" class="me-3">
+                        <div id="coin">
+                          <div class="coin-side heads">
+                            <!-- We'll add the heads SVG here in the JavaScript -->
+                          </div>
+                          <div class="coin-side tails">
+                            <!-- We'll add the tails SVG here in the JavaScript -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                      <h3>Previous Outcomes</h3>
+                      <button id="resetOutcomes" class="btn btn-secondary">Reset Outcomes</button>
+                    </div>
+                    
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Outcome</th>
+                        </tr>
+                      </thead>
+                      <tbody id="outcomesList">
+                        <!-- Outcomes will be added here dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+
                 <!-- PREPLAN LEAVING TIME TAB -->
                 <div class="tab-pane fade" id="calculateTime-tab" role="tabpanel" aria-labelledby="calculateTime" tabindex="0">
                     <div class="d-flex justify-content-between">
@@ -126,8 +169,8 @@ Version: 1.1.2
                         <p class="m-2">min</p>
                     </div>
                     <br>
-                    <label for="lunch" class="form-label">How much time are you planning to take lunch for ⏱️?</label><p id="suggestLunch"></p>
-                    <div id="lunch" class="d-flex">
+                    <p class="form-label">How much time are you planning to take lunch for ⏱️?</p><p id="suggestLunch"></p>
+                    <div class="d-flex">
                         <div class="me-2">
                             <label for="lunchStart"><strong>From :</strong></label>
                             <input id="lunchStart" type="time" class="form-control" value="12:00" 
@@ -188,7 +231,7 @@ Version: 1.1.2
 
     <script>
         let app = localStorage.getItem("app")
-        if (app === "calculateTime") {
+        if (app !== "changeText") {
             document.getElementById(app).classList.add("active")
             document.getElementById(app+"-tab").classList.add("show", "active")
             document.getElementById("changeText").classList.remove("active")

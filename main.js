@@ -109,6 +109,121 @@ function dynamicHeight(id) {
 }
 
 
+// Coin toss functionality
+let outcomes = [];
+let isFlipping = false;
+
+function initCoinToss() {
+  const coin = document.getElementById('coin');
+  const tossButton = document.getElementById('tossButton');
+  const resetButton = document.getElementById('resetOutcomes');
+
+  // Add coin SVGs
+  document.querySelector('.coin-side.heads').innerHTML = `
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="95" fill="#FFD700" stroke="#B8860B" stroke-width="5"/>
+      <text x="100" y="115" font-size="60" text-anchor="middle" fill="#B8860B" font-weight="bold">H</text>
+    </svg>
+  `;
+  document.querySelector('.coin-side.tails').innerHTML = `
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="95" fill="#FFD700" stroke="#B8860B" stroke-width="5"/>
+      <text x="100" y="115" font-size="60" text-anchor="middle" fill="#B8860B" font-weight="bold">T</text>
+    </svg>
+  `;
+
+  coin.addEventListener('click', tossCoin);
+  tossButton.addEventListener('click', tossCoin);
+  resetButton.addEventListener('click', resetOutcomes);
+
+  loadOutcomes();
+  updateOutcomesList();
+}
+
+function tossCoin() {
+  if (isFlipping) return;
+  isFlipping = true;
+  
+  const coin = document.getElementById('coin');
+  const randomFlips = Math.floor(Math.random() * 5) + 5; // 5 to 9 flips
+  const outcome = Math.random() < 0.5 ? 'Heads' : 'Tails';
+  
+  coin.style.transition = 'none';
+  coin.style.transform = `rotateY(0deg)`;
+  
+  setTimeout(() => {
+    coin.style.transition = `transform ${randomFlips * 0.15}s`;
+    coin.style.transform = `rotateY(${randomFlips * 180 + (outcome === 'Heads' ? 0 : 180)}deg)`;
+    playTossSound();
+    
+    setTimeout(() => {
+      isFlipping = false;
+      outcomes.unshift(outcome);
+      if (outcomes.length > 25) outcomes.pop();
+      updateOutcomesList();
+      saveOutcomes();
+    }, randomFlips * 150);
+  }, 50);
+}
+
+function updateOutcomesList() {
+  const outcomesList = document.getElementById('outcomesList');
+  outcomesList.innerHTML = outcomes.map((outcome, index) => `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${outcome}</td>
+    </tr>
+  `).join('');
+}
+
+function resetOutcomes() {
+  outcomes = [];
+  updateOutcomesList();
+  saveOutcomes();
+  const coin = document.getElementById('coin');
+  coin.style.transition = 'transform 0.5s';
+  coin.style.transform = 'rotateY(0deg)'; // Reset to heads
+}
+
+function saveOutcomes() {
+  localStorage.setItem('coinTossOutcomes', JSON.stringify(outcomes));
+}
+
+function loadOutcomes() {
+  const savedOutcomes = localStorage.getItem('coinTossOutcomes');
+  if (savedOutcomes) {
+    outcomes = JSON.parse(savedOutcomes);
+  }
+}
+
+function playTossSound() {
+  const audio = new Audio('public/audio/coin-flip.mp3');  
+
+  const context = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = context.createOscillator();
+  oscillator.type = 'sine';
+  oscillator.frequency.setValueAtTime(400, context.currentTime); // Value in hertz
+  
+  const gainNode = context.createGain();
+  gainNode.gain.setValueAtTime(1, context.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.5);
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(context.destination);
+  
+  // Attempt to play the audio file, fall back to Web Audio API if it fails
+  audio.play().catch(error => {
+    console.warn('Audio file playback failed, falling back to generated sound.', error);
+    oscillator.start();
+    oscillator.stop(context.currentTime + 0.5);
+  });
+}
+
+// Call initCoinToss when the DOM is loaded
+document.addEventListener('DOMContentLoaded', initCoinToss);
+
+
+
 // Pre Plan Leaving Time functions
 let AlarmOn = false
 function toggleAlarm() { 
