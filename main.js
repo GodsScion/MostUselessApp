@@ -114,30 +114,30 @@ let outcomes = [];
 let isFlipping = false;
 
 function initCoinToss() {
-    const coin = document.getElementById('coin');
-    const tossButton = document.getElementById('tossButton');
-    const resetButton = document.getElementById('resetOutcomes');
-  
-    // Add coin SVGs
-    document.querySelector('.coin-side.heads').innerHTML = getSVG('H');
-    document.querySelector('.coin-side.tails').innerHTML = getSVG('T');
-  
-    tossButton.addEventListener('click', tossCoin);
-    resetButton.addEventListener('click', resetOutcomes);
-  
-    loadOutcomes();
-    updateOutcomesTable();
-  
-    // Set initial coin state
-    if (outcomes.length > 0) {
-      const lastOutcome = outcomes[0];
-      const initialRotation = lastOutcome === 'Heads' ? '0deg' : '180deg';
-      coin.style.transform = `rotateY(${initialRotation})`;
-    } else {
-      coin.style.transform = 'rotateY(0deg)'; // Default to heads
-    }
-  }
-  
+  const coin = document.getElementById('coin');
+  const tossButton = document.getElementById('tossButton');
+  const resetButton = document.getElementById('resetOutcomes');
+
+  // Add coin SVGs
+  document.querySelector('.coin-side.heads').innerHTML = getSVG('H');
+  document.querySelector('.coin-side.tails').innerHTML = getSVG('T');
+
+  coin.addEventListener('click', tossCoin);
+  tossButton.addEventListener('click', tossCoin);
+  resetButton.addEventListener('click', resetOutcomes);
+
+  loadOutcomes();
+  updateOutcomesTable();
+}
+
+function getSVG(text) {
+  return `
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="95" fill="#FFD700" stroke="#B8860B" stroke-width="5"/>
+      <text x="100" y="115" font-size="60" text-anchor="middle" fill="#B8860B" font-weight="bold">${text}</text>
+    </svg>
+  `;
+}
 
 function tossCoin() {
   if (isFlipping) return;
