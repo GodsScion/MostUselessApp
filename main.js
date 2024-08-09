@@ -121,7 +121,6 @@ function initCoinToss() {
   const tossButton = document.getElementById('tossButton');
   const resetButton = document.getElementById('resetOutcomes');
 
-  // Add coin SVGs
   document.querySelector('.coin-side.heads').innerHTML = getSVG('H');
   document.querySelector('.coin-side.tails').innerHTML = getSVG('T');
 
@@ -168,11 +167,13 @@ function tossCoin() {
     const coin = document.getElementById('coin');
     disableEle('tossButton', 0.1 + slowTime + fastTime);
     disableEle('coin', 0.1 + slowTime + fastTime);
+    disableEle('resetOutcomes', 0.1 + slowTime + fastTime)
  
     rotateCoin(coin, fastRotations, fastTime, () => {
       rotateCoin(coin, slowRotations + outcomeFlip, slowTime, () => {
           isFlipping = false;
           const outcome = outcomeFlip === 1 ? 'Tails': 'Heads';
+          document.getElementById("outcomeText").innerHTML = `🥳 It's 🎉 ${outcome.toUpperCase()} 🎊 !!!`;
           outcomes.unshift(outcome);
           if (outcomes.length > 25) outcomes.pop();
           updateOutcomesTable();
@@ -202,6 +203,7 @@ function resetCoinPosition() {
   const coin = document.getElementById('coin');
   coin.style.transition = 'transform 0.5s';
   coin.style.transform = 'rotateY(0deg)';
+  document.getElementById("outcomeText").innerHTML = "";
 }
 
 function saveOutcomes() {

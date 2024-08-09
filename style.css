@@ -73,3 +73,7 @@
 .coin-side.tails {
   transform: rotateY(180deg);
 }
+
+#outcomeText {
+  text-align: center;
+}
