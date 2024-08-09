@@ -52,12 +52,15 @@ function showTip() {
 }
 function turnOnAlarmFirstTime() {
     let app = localStorage.getItem("app")
-    if (app !== "changeText" && !AlarmOn) {
+    if (app === "calculateTime" && !AlarmOn) {
         showToast("Alarm will be turned On ⏰🔔 in few secs!","ℹ️ Info")
         setTimeout(() => {AlarmOn = false; toggleAlarm()}, 6000)
     }
 }
-
+function disableEle(id, timerSecs) {
+    document.getElementById(id).disabled = true;
+    if (timerSecs) { setTimeout(() => { document.getElementById(id).disabled = false }, timerSecs*1000) }
+}
 
 // Change Text Cases functions
 function reset() {
@@ -139,30 +142,44 @@ function getSVG(text) {
   `;
 }
 
-function tossCoin() {
-  if (isFlipping) return;
-  isFlipping = true;
-
-  const coin = document.getElementById('coin');
-  const randomFlips = Math.floor(Math.random() * 5) + 5; // 5 to 9 flips
-  const evenFlips = [10, 12, 14][Math.floor(Math.random() * 3)]; // Add random even number of flips
-  const totalFlips = randomFlips + evenFlips;
-  const flipDuration = totalFlips * 0.10;
-
-  coin.style.transition = `transform ${flipDuration}s`;
-  const finalRotation = 180 * totalFlips + (Math.random() < 0.5 ? 0 : 180);
-  coin.style.transform = `rotateY(${finalRotation}deg)`;
-  playTossSound();
-
-  setTimeout(() => {
-    isFlipping = false;
-    const outcome = finalRotation % 360 === 0 ? 'Heads' : 'Tails';
-    outcomes.unshift(outcome);
-    if (outcomes.length > 25) outcomes.pop();
-    updateOutcomesTable();
-    saveOutcomes();
-  }, flipDuration * 1000);
+function rotateCoin(coin = document.getElementById('coin') , flips = 20, secs = 0.5, thenFunc) {
+    coin.style.transition = `transform ${secs}s`;
+    coin.style.transform = `rotateY(${180 * flips}deg)`;
+    setTimeout(() => {
+        if (thenFunc) {thenFunc();}
+    }, secs*1000);
 }
+
+function tossCoin() {
+    if (isFlipping) return;
+    isFlipping = true;
+
+    let outcomeFlip = Math.random() < 0.5 ? 0 : 1;
+    if (outcomes.length > 0 && outcomes[0] === "Tails") { outcomeFlip += 1; }
+  
+    const fastRotations = 11  * 2;
+    const fastTime = fastRotations * 0.01;
+    
+    const slowRotations = (Math.floor(Math.random() * 5) + 5)  * 2;
+    const slowTime = slowRotations * 0.05;
+ 
+    playTossSound();
+  
+    const coin = document.getElementById('coin');
+    disableEle('tossButton', 0.1 + slowTime + fastTime);
+    disableEle('coin', 0.1 + slowTime + fastTime);
+ 
+    rotateCoin(coin, fastRotations, fastTime, () => {
+      rotateCoin(coin, slowRotations + outcomeFlip, slowTime, () => {
+          isFlipping = false;
+          const outcome = outcomeFlip === 1 ? 'Tails': 'Heads';
+          outcomes.unshift(outcome);
+          if (outcomes.length > 25) outcomes.pop();
+          updateOutcomesTable();
+          saveOutcomes();
+      });
+    });
+  }
 
 function updateOutcomesTable() {
   const outcomesTableBody = document.getElementById('outcomesList');
@@ -184,7 +201,7 @@ function resetOutcomes() {
 function resetCoinPosition() {
   const coin = document.getElementById('coin');
   coin.style.transition = 'transform 0.5s';
-  coin.style.transform = 'rotateY(0deg)'; // Reset to heads
+  coin.style.transform = 'rotateY(0deg)';
 }
 
 function saveOutcomes() {
@@ -195,6 +212,9 @@ function loadOutcomes() {
   const savedOutcomes = localStorage.getItem('coinTossOutcomes');
   if (savedOutcomes) {
     outcomes = JSON.parse(savedOutcomes);
+    if (outcomes.length > 0 && outcomes[0] === 'Tails') {
+        document.getElementById("coin").style.transform = "rotateY(180deg)";
+    }
   }
 }
 
@@ -228,115 +248,115 @@ document.addEventListener('DOMContentLoaded', initCoinToss);
 // Pre Plan Leaving Time functions
 let AlarmOn = false
 function toggleAlarm() { 
-    AlarmOn = !AlarmOn 
+    AlarmOn = !AlarmOn;
     if (AlarmOn) {
-        const btn = document.getElementById("toggleAlarmBtn")
-        showToast("Alarm is On ⏰🔔","ℹ️ Info") 
-        btn.innerHTML = "Turn Off Alarm ⏰🔕"
-        btn.classList.replace("btn-secondary","btn-warning")
+        const btn = document.getElementById("toggleAlarmBtn");
+        showToast("Alarm is On ⏰🔔","ℹ️ Info");
+        btn.innerHTML = "Turn Off Alarm ⏰🔕";
+        btn.classList.replace("btn-secondary","btn-warning");
     } else {
-        const btn = document.getElementById("toggleAlarmBtn")
-        showToast("Alarm is Off ⏰🔕","ℹ️ Info") 
-        btn.innerHTML = "Turn On Alarm ⏰🔔"
-        btn.classList.replace("btn-warning","btn-secondary")
+        const btn = document.getElementById("toggleAlarmBtn");
+        showToast("Alarm is Off ⏰🔕","ℹ️ Info");
+        btn.innerHTML = "Turn On Alarm ⏰🔔";
+        btn.classList.replace("btn-warning","btn-secondary");
     }
 }
 function timeCorrecter(hrs) { 
     if (Number(hrs) >= 24) { 
-        let tomorrow = new Date(new Date() + (Number(hrs)-24)*60*60*1000)
-        return [tomorrow.getHours(), "TOMORROW as in " + tomorrow + ""]
+        let tomorrow = new Date(new Date() + (Number(hrs)-24)*60*60*1000);
+        return [tomorrow.getHours(), "TOMORROW as in " + tomorrow + ""];
     } else { 
-        return [hrs, ""] 
+        return [hrs, ""];
     } 
 }
 function timeLeft() {
-    let currentTime = new Date()
-    let leavingTime = document.getElementById("leavingTime").value.split(":")
-    let timeLeft = (Number(leavingTime[0]) - currentTime.getHours())*60 + Number(leavingTime[1]) - currentTime.getMinutes()
+    let currentTime = new Date();
+    let leavingTime = document.getElementById("leavingTime").value.split(":");
+    let timeLeft = (Number(leavingTime[0]) - currentTime.getHours())*60 + Number(leavingTime[1]) - currentTime.getMinutes();
     document.getElementById("time").innerHTML = currentTime.toLocaleTimeString();
     if (timeLeft > 0) { 
-        document.getElementById("timeLeft").innerHTML = `Hustle! Hustle! There's only ${Math.floor(timeLeft/60)} h ${timeLeft%60} m ${59 - currentTime.getSeconds()} s left 🧑‍💻☕!`
+        document.getElementById("timeLeft").innerHTML = `Hustle! Hustle! There's only ${Math.floor(timeLeft/60)} h ${timeLeft%60} m ${59 - currentTime.getSeconds()} s left 🧑‍💻☕!`;
     } else { 
-        document.getElementById("timeLeft").innerHTML = `What are you still waiting for, isn't it time to leave 😁?`; 
-        if (AlarmOn) { showToast("Let's Go...❗❗","<h2>🔔</h2>",false) }
+        document.getElementById("timeLeft").innerHTML = `What are you still waiting for, isn't it time to leave 😁?`;
+        if (AlarmOn) { showToast("Let's Go...❗❗","<h2>🔔</h2>",false) };
     }
 }
 function validateLunch() {
-    let lunchTotal = Number(document.getElementById("lunchTotal").value)
-    let workTotal = Number(document.getElementById("targetHrs").value)*60 + Number(document.getElementById("targetMin").value)
-    let start = document.getElementById("startTime").value.split(":")
-    document.getElementById("suggestLunch").innerHTML = `Recommended to start Lunch after ${timeCorrecter(Number(start[0])+3)[0]}:${start[1]} and before ${timeCorrecter(Number(start[0])+5)[0]}:${start[1]}`
-    let lunch = document.getElementById("lunchStart").value.split(":")
-    let diff = Number(lunch[0])*60 + Number(lunch[1]) - Number(start[0])*60 - Number(start[1])
-    if (lunchTotal < 30 && (workTotal > 360 || (lunchTotal > 0 && workTotal <= 360))) { return showWarning("Usually Lunch can't be less than 30 min. Unless you're waiving it for some reason 🧐. Please update Lunch 'Total' as 0 if you'll only work 6 hrs or less and skip lunch 😅!") }
-    if (diff < 0) { return showWarning("Lunch should start after your Office entry time 😒!") }
-    if (diff >= 300 && workTotal > 360) { return showWarning(`Lunch should start before 5 hrs from entry of your office 🧐. Your current difference is ${Math.floor(diff/60)} hrs ${(diff%60).toString().padStart(2,0)} min 🥱. Unless you're waving your lunch time and only working for max 6 hrs today!`) }
-    if (diff < 180) { return showWarning(`It's recommended to start Lunch at least after 3 hrs from entry of your office 🧐. Your current difference is only ${Math.floor(diff/60)} hrs ${(diff%60).toString().padStart(2,0)} min 😑`) }
-    return hideWarning()
+    let lunchTotal = Number(document.getElementById("lunchTotal").value);
+    let workTotal = Number(document.getElementById("targetHrs").value)*60 + Number(document.getElementById("targetMin").value);
+    let start = document.getElementById("startTime").value.split(":");
+    document.getElementById("suggestLunch").innerHTML = `Recommended to start Lunch after ${timeCorrecter(Number(start[0])+3)[0]}:${start[1]} and before ${timeCorrecter(Number(start[0])+5)[0]}:${start[1]}`;
+    let lunch = document.getElementById("lunchStart").value.split(":");
+    let diff = Number(lunch[0])*60 + Number(lunch[1]) - Number(start[0])*60 - Number(start[1]);
+    if (lunchTotal < 30 && (workTotal > 360 || (lunchTotal > 0 && workTotal <= 360))) { return showWarning("Usually Lunch can't be less than 30 min. Unless you're waiving it for some reason 🧐. Please update Lunch 'Total' as 0 if you'll only work 6 hrs or less and skip lunch 😅!") };
+    if (diff < 0) { return showWarning("Lunch should start after your Office entry time 😒!") };
+    if (diff >= 300 && workTotal > 360) { return showWarning(`Lunch should start before 5 hrs from entry of your office 🧐. Your current difference is ${Math.floor(diff/60)} hrs ${(diff%60).toString().padStart(2,0)} min 🥱. Unless you're waving your lunch time and only working for max 6 hrs today!`) };
+    if (diff < 180) { return showWarning(`It's recommended to start Lunch at least after 3 hrs from entry of your office 🧐. Your current difference is only ${Math.floor(diff/60)} hrs ${(diff%60).toString().padStart(2,0)} min 😑`) };
+    return hideWarning();
 }
 function changeTotal(th) {
-    const startEle = document.getElementById("lunchStart")
-    const endEle = document.getElementById("lunchEnd")
-    let start = startEle.value.split(":")
-    let end = endEle.value.split(":")
-    const totalEle = document.getElementById("lunchTotal")
-    let total = (Number(end[0]) - Number(start[0]))*60 - Number(start[1]) + Number(end[1])
+    const startEle = document.getElementById("lunchStart");
+    const endEle = document.getElementById("lunchEnd");
+    let start = startEle.value.split(":");
+    let end = endEle.value.split(":");
+    const totalEle = document.getElementById("lunchTotal");
+    let total = (Number(end[0]) - Number(start[0]))*60 - Number(start[1]) + Number(end[1]);
     if (total > 180) { 
         showToast("Total duration of lunch cannot be greater than 3 hrs = 180 min 😑!"); 
-        return endEle.value = (Number(start[0])+3).toString().padStart(2,0) + ":" + start[1]
+        return endEle.value = (Number(start[0])+3).toString().padStart(2,0) + ":" + start[1];
     }
     if (total < 0) { 
         showToast("You cannot end lunch before you can start your lunch 😒!"); 
-        endEle.value = (Number(start[0])).toString().padStart(2,0) + ":" + start[1]
-        total = 0
+        endEle.value = (Number(start[0])).toString().padStart(2,0) + ":" + start[1];
+        total = 0;
     }             
-    totalEle.value = total 
-    calLeaveTime()
+    totalEle.value = total ;
+    calLeaveTime();
 }
 function changeTo(th) {
-    let start = document.getElementById("lunchStart").value.split(":")
-    let total = Number(document.getElementById("lunchTotal").value)
-    let min = Number(start[1]) + total
-    let hrs = timeCorrecter( Number(start[0]) + Math.floor(min/60) )
-    document.getElementById("lunchEnd").value = hrs[0].toString().padStart(2,0) + ":" + (min%60).toString().padStart(2,0)
-    time24("lunchEnd", null, hrs[1])
-    validateLunch()
+    let start = document.getElementById("lunchStart").value.split(":");
+    let total = Number(document.getElementById("lunchTotal").value);
+    let min = Number(start[1]) + total;
+    let hrs = timeCorrecter( Number(start[0]) + Math.floor(min/60) );
+    document.getElementById("lunchEnd").value = hrs[0].toString().padStart(2,0) + ":" + (min%60).toString().padStart(2,0);
+    time24("lunchEnd", null, hrs[1]);
+    validateLunch();
 }
 function calLeaveTime() {
-    const startEle = document.getElementById("startTime")
-    const targetHrsEle = document.getElementById("targetHrs")
-    const targetMinEle = document.getElementById("targetMin")
-    const lunchTotalEle = document.getElementById("lunchTotal")
-    const leavingTimeEle = document.getElementById("leavingTime")
-    let start = startEle.value.split(":")
-    let min = Number(start[1]) + Number(targetMinEle.value) + Number(lunchTotalEle.value)
-    let hrs = timeCorrecter( Number(start[0]) + Number(targetHrsEle.value) + Math.floor(min/60) )
+    const startEle = document.getElementById("startTime");
+    const targetHrsEle = document.getElementById("targetHrs");
+    const targetMinEle = document.getElementById("targetMin");
+    const lunchTotalEle = document.getElementById("lunchTotal");
+    const leavingTimeEle = document.getElementById("leavingTime");
+    let start = startEle.value.split(":");
+    let min = Number(start[1]) + Number(targetMinEle.value) + Number(lunchTotalEle.value);
+    let hrs = timeCorrecter( Number(start[0]) + Number(targetHrsEle.value) + Math.floor(min/60) );
     console.log(hrs);
-    leavingTimeEle.value = hrs[0].toString().padStart(2,0) + ":" + (min%60).toString().padStart(2,0)
-    time24("leavingTime", null, hrs[1])
-    validateLunch()
+    leavingTimeEle.value = hrs[0].toString().padStart(2,0) + ":" + (min%60).toString().padStart(2,0);
+    time24("leavingTime", null, hrs[1]);
+    validateLunch();
 }
 function time24(id, th, tomorrow = "") { 
-    const hmEle = document.getElementById(id)
-    let hm = hmEle.value.split(':')
+    const hmEle = document.getElementById(id);
+    let hm = hmEle.value.split(':');
     if (hm.length !== 2 || isNaN(hm[0]) || isNaN(hm[1]) || Number(hm[0]) > 23 || Number(hm[0]) < 0 || Number(hm[1]) > 59 || Number(hm[1]) < 0) {
-        hmEle.value = th.previousValue || "00:00"
-        showToast("Seriously 😒? Use arrows ⬆️⬇️ or click on 🕒 to change time. Only enter valid inputs.")
+        hmEle.value = th.previousValue || "00:00";
+        showToast("Seriously 😒? Use arrows ⬆️⬇️ or click on 🕒 to change time. Only enter valid inputs.");
     }
-    document.getElementById(id+'-24').innerHTML = hmEle.value + " Military time" + tomorrow 
+    document.getElementById(id+'-24').innerHTML = hmEle.value + " Military time" + tomorrow;
 }
 function resetAll() {
-    document.getElementById("startTime").value = "08:00"
-    document.getElementById("startTime-24").innerHTML = "08:00 Military time"
-    document.getElementById("targetHrs").value = "8"
-    document.getElementById("targetMin").value = "00"
-    document.getElementById("lunchTotal").value = "30"
-    document.getElementById("lunchStart").value = "12:00"
-    document.getElementById("lunchStart-24").innerHTML = "12:00 Military time"
-    document.getElementById("lunchEnd").value = "12:30"
-    document.getElementById("lunchEnd-24").innerHTML = "12:30 Military time"
-    document.getElementById("leavingTime").value = "16:30"
-    document.getElementById("leavingTime-24").innerHTML = "16:30 Military time"
-    AlarmOn = false
-    hideWarning()
+    document.getElementById("startTime").value = "08:00";
+    document.getElementById("startTime-24").innerHTML = "08:00 Military time";
+    document.getElementById("targetHrs").value = "8";
+    document.getElementById("targetMin").value = "00";
+    document.getElementById("lunchTotal").value = "30";
+    document.getElementById("lunchStart").value = "12:00";
+    document.getElementById("lunchStart-24").innerHTML = "12:00 Military time";
+    document.getElementById("lunchEnd").value = "12:30";
+    document.getElementById("lunchEnd-24").innerHTML = "12:30 Military time";
+    document.getElementById("leavingTime").value = "16:30";
+    document.getElementById("leavingTime-24").innerHTML = "16:30 Military time";
+    AlarmOn = false;
+    hideWarning();
 }
