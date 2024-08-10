@@ -167,13 +167,13 @@ function tossCoin() {
         
         let todays_message = messages[Math.floor(Math.random() * messages.length)]
         showToast("<h6>" + todays_message.message + "</h6>", "<h5>" + todays_message.title + "</h5>")
+        console.log(`Notification: Aggressive coin clicker! ${todays_message.title}, ${todays_message.message}`);
         return;
     }
     isFlipping = true;
 
     let outcome = "Heads";
     let outcomeFlip = Math.floor(Math.random() * 11);
-    console.log(outcomeFlip);
     if (outcomeFlip === 5) {
         outcomeFlip = sideAngle;
         outcome = "Sides";
@@ -365,7 +365,6 @@ function calLeaveTime() {
     let start = startEle.value.split(":");
     let min = Number(start[1]) + Number(targetMinEle.value) + Number(lunchTotalEle.value);
     let hrs = timeCorrecter(Number(start[0]) + Number(targetHrsEle.value) + Math.floor(min / 60));
-    console.log(hrs);
     leavingTimeEle.value = hrs[0].toString().padStart(2, 0) + ":" + (min % 60).toString().padStart(2, 0);
     time24("leavingTime", null, hrs[1]);
     validateLunch();
