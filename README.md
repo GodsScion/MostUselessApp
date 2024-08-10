@@ -8,4 +8,4 @@ Well, I don't know why anyone would even take a look at this 😑. But, if you'r
 - **LinkedIn:**   https://www.linkedin.com/in/saivigneshgolla/
 - **Email:**      saivigneshgolla@outlook.com
 - **GitHub:**     https://github.com/GodsScion
-- **X/Twitter**:  https://x.com/gods_scion
+- **X / Twitter**:  https://x.com/gods_scion
