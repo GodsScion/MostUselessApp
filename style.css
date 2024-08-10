@@ -1,51 +1,53 @@
 .bg-color {
-    background: linear-gradient(120deg, #4c0bce 85%, #0d6efd);
-    color: white;
+  background: linear-gradient(120deg, #4c0bce 85%, #0d6efd);
+  color: white;
 }
 
-.w-10 { width: 10%; }
+.w-10 {
+  width: 10%;
+}
 
 .tab-border {
-    border: 2px;
-    border-color: #0d6efd;
-    border-style: solid;
+  border: 2px;
+  border-color: #0d6efd;
+  border-style: solid;
 }
 
 .tooltip-text {
-    text-align: center;
+  text-align: center;
 
-    border-radius: 5px;
-    position: absolute;
-    z-index: 1;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 1;
 
-    transition: all 0.3s;
+  transition: all 0.3s;
 }
 
 .tooltip-text::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: 100%;
-    margin-top: -10px;
-    border-width: 10px;
-    border-style: solid;
-    border-color: transparent #4c0bce transparent transparent;
-  }
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -10px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent #4c0bce transparent transparent;
+}
 
 .list-vertical {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 
-    /* transition: all 0.3s; */
+  /* transition: all 0.3s; */
 }
 
 .btn-primary {
-    min-width: 10rem;  
+  min-width: 10rem;
 }
 
 #coin-container {
-  width: 200px; 
-  height: 200px; 
+  width: 200px;
+  height: 200px;
   perspective: 1000px;
 }
 
