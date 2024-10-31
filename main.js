@@ -1,22 +1,37 @@
-// let app = localStorage.getItem("app")
-// if (app !== null) document.getElementById(app).click() 
-const messages = [
-    { title: "Hold on, is this real 😵‍💫?", message: "I wasn't sure anyone would find this! Are you lost 🤨?" },
-    { title: "You must be really bored 😏", message: "We get it, existential dread is a real thing. But seriously, there's gotta be something better to do... right 😂?" },
-    { title: "Alert❗", message: "A single user has been detected! Prepare the... confetti 🎊? Wait, I don't actually have confetti 😅." },
-    { title: "Mom! Look, I have a visitor 😃!", message: "Pssst, don't tell her, you're the only active visitor 🤫." },
-    { title: "🚨 BREAKING NEWS 🚨 Website receives first visitor in the history of ever.", message: "More at 11 👨🏼‍💼📰... or whenever we figure out how to write news articles 🤓😅." },
-    { title: "Would you like a participation trophy 🏆 for finding this?", message: "Just kidding (mostly). I'm happy to have you 😁..." },
-    { title: "ℹ️ Info", message: "This notification is the most exciting thing that will happen here all day 🥱. Maybe." },
-    { title: "Wait! What 😲!!?", message: "Is someone actually using this website 🤯?" },
-]
-let todays_message = messages[Math.floor(Math.random() * messages.length)]
-showToast("<h6>" + todays_message.message + "</h6>", "<h5>" + todays_message.title + "</h5>")
+// Global variables
+let g_mute = localStorage.getItem("tossMute") || "false";
 
-setInterval(timeLeft, 1000)
-setTimeout(showTip, 8000)
+
+// Initialization
+function appInit() {
+    // Event listeners
+    initMuteBtn();
+    document.addEventListener('DOMContentLoaded', initCoinToss);
+
+    showWelcomeMessage();
+    setInterval(timeLeft, 1000)
+    setTimeout(showTip, 8000)
+}
+
+appInit()
+
+
 
 // App level functions
+function showWelcomeMessage() { 
+    const messages = [
+        { title: "Hold on, is this real 😵‍💫?", message: "I wasn't sure anyone would find this! Are you lost 🤨?" },
+        { title: "You must be really bored 😏", message: "We get it, existential dread is a real thing. But seriously, there's gotta be something better to do... right 😂?" },
+        { title: "Alert❗", message: "A single user has been detected! Prepare the... confetti 🎊? Wait, I don't actually have confetti 😅." },
+        { title: "Mom! Look, I have a visitor 😃!", message: "Pssst, don't tell her, you're the only active visitor 🤫." },
+        { title: "🚨 BREAKING NEWS 🚨 Website receives first visitor in the history of ever.", message: "More at 11 👨🏼‍💼📰... or whenever we figure out how to write news articles 🤓😅." },
+        { title: "Would you like a participation trophy 🏆 for finding this?", message: "Just kidding (mostly). I'm happy to have you 😁..." },
+        { title: "ℹ️ Info", message: "This notification is the most exciting thing that will happen here all day 🥱. Maybe." },
+        { title: "Wait! What 😲!!?", message: "Is someone actually using this website 🤯?" },
+    ]
+    let todays_message = messages[Math.floor(Math.random() * messages.length)]
+    showToast("<h6>" + todays_message.message + "</h6>", "<h5>" + todays_message.title + "</h5>")
+}
 function themeChanger() {
     const themeBtn = document.getElementById("theme")
     let theme = "light"
@@ -52,15 +67,49 @@ function showTip() {
 }
 function turnOnAlarmFirstTime() {
     let app = localStorage.getItem("app")
-    if (app === "calculateTime" && !AlarmOn) {
+    if (app === "calculateTime" && !g_AlarmOn) {
         showToast("Alarm will be turned On ⏰🔔 in few secs!", "ℹ️ Info")
-        setTimeout(() => { AlarmOn = false; toggleAlarm() }, 6000)
+        setTimeout(() => { g_AlarmOn = false; toggleAlarm() }, 6000)
     }
 }
 function disableEle(id, timerSecs) {
     document.getElementById(id).disabled = true;
     if (timerSecs) { setTimeout(() => { document.getElementById(id).disabled = false }, timerSecs * 1000) }
 }
+function showSpinner(id, timerSecs) {
+    const spinner = document.getElementById(id);
+    spinner.hidden = false;
+    if (timerSecs) { setTimeout(() => { spinner.hidden = true }, timerSecs * 1000) }
+}
+
+// Mute button
+function initMuteBtn() {
+    const tossMuteButton = document.getElementById("tossMuteButton");
+    tossMuteButton.addEventListener('click', toggleMute);
+    if (g_mute === "true") {
+        tossMuteButton.innerHTML = "Muted 🔇";
+        tossMuteButton.classList.add("btn-outline-danger");
+    } else {
+        tossMuteButton.innerHTML = "Unmuted 🔊";
+        tossMuteButton.classList.add("btn-outline-primary");
+    }
+}
+function toggleMute() {
+    const muteBtn = document.getElementById("tossMuteButton");
+    if (g_mute === "true") {
+        g_mute = "false";
+        showToast("Unmuted 🔊", "ℹ️ Info");
+        muteBtn.innerHTML = "Unmuted 🔊";
+        muteBtn.classList.replace("btn-outline-danger", "btn-outline-primary");
+    } else {
+        g_mute = "true";
+        showToast("Muted 🔇", "ℹ️ Info");
+        muteBtn.innerHTML = "Muted 🔇";
+        muteBtn.classList.replace("btn-outline-primary", "btn-outline-danger");
+    }
+    localStorage.setItem("tossMute", g_mute);
+}
+
 
 // Change Text Cases functions
 function reset() {
@@ -113,9 +162,9 @@ function dynamicHeight(id) {
 
 
 // Coin toss functionality
-let outcomes = [];
-let isFlipping = false;
-const sideAngle = 0.45;
+let g_outcomes = [];
+let g_isFlipping = false;
+const g_sideAngle = 0.45;
 
 function initCoinToss() {
     const coin = document.getElementById('coin');
@@ -151,7 +200,7 @@ function rotateCoin(coin = document.getElementById('coin'), flips = 20, secs = 0
 }
 
 function tossCoin() {
-    if (isFlipping) {
+    if (g_isFlipping) {
         const messages = [
             { title: "ℹ️ Info", message: "Wait up bud, let the coin complete its flip. Patience is a virtue, you know 😜." },
             { title: "Whooo whoo, hold up 🛑!", message: "The coin didn't even land yet! Are you that desperate for an answer 🤔?" },
@@ -170,12 +219,12 @@ function tossCoin() {
         console.log(`Notification: Aggressive coin clicker! ${todays_message.title}, ${todays_message.message}`);
         return;
     }
-    isFlipping = true;
+    g_isFlipping = true;
 
     let outcome = "Heads";
     let outcomeFlip = Math.floor(Math.random() * 11);
     if (outcomeFlip === 5) {
-        outcomeFlip = sideAngle;
+        outcomeFlip = g_sideAngle;
         outcome = "Sides";
     } else if (outcomeFlip < 5) {
         outcomeFlip = 0;
@@ -194,16 +243,19 @@ function tossCoin() {
 
     const coin = document.getElementById('coin');
     coin.style.transform = 'rotateY(0deg)';
-    disableEle('tossButton', 0.1 + slowTime + fastTime);
-    disableEle('coin', 0.1 + slowTime + fastTime);
-    disableEle('resetOutcomes', 0.1 + slowTime + fastTime)
+    
+    const totalTime = 0.1 + slowTime + fastTime;
+    disableEle('tossButton', totalTime);
+    showSpinner('tossButtonSpinner', totalTime);
+    disableEle('coin', totalTime);
+    disableEle('resetOutcomes', totalTime);
 
     rotateCoin(coin, fastRotations, fastTime, () => {
         rotateCoin(coin, slowRotations + outcomeFlip, slowTime, () => {
-            isFlipping = false;
+            g_isFlipping = false;
             document.getElementById("outcomeText").innerHTML = outcome === "Sides" ? `Wait ! What the coin 🤨 !? It actually stopped on the SIDE 🤔 ! What kind of choices are you making there bud 🫠💀 ??` : `🥳 It's 🎉 ${outcome.toUpperCase()} 🎊 !!!`;
-            outcomes.unshift(outcome);
-            if (outcomes.length > 25) outcomes.pop();
+            g_outcomes.unshift(outcome);
+            if (g_outcomes.length > 25) g_outcomes.pop();
             updateOutcomesTable();
             saveOutcomes();
         });
@@ -212,7 +264,7 @@ function tossCoin() {
 
 function updateOutcomesTable() {
     const outcomesTableBody = document.getElementById('outcomesList');
-    outcomesTableBody.innerHTML = outcomes.map((outcome, index) => `
+    outcomesTableBody.innerHTML = g_outcomes.map((outcome, index) => `
     <tr>
       <td>${index + 1}</td>
       <td>${outcome}</td>
@@ -221,7 +273,7 @@ function updateOutcomesTable() {
 }
 
 function resetOutcomes() {
-    outcomes = [];
+    g_outcomes = [];
     updateOutcomesTable();
     saveOutcomes();
     resetCoinPosition();
@@ -235,24 +287,26 @@ function resetCoinPosition() {
 }
 
 function saveOutcomes() {
-    localStorage.setItem('coinTossOutcomes', JSON.stringify(outcomes));
+    localStorage.setItem('coinTossOutcomes', JSON.stringify(g_outcomes));
 }
 
 function loadOutcomes() {
     const savedOutcomes = localStorage.getItem('coinTossOutcomes');
     if (savedOutcomes) {
-        outcomes = JSON.parse(savedOutcomes);
-        if (outcomes.length > 0) {
-            if (outcomes[0] === 'Tails') {
+        g_outcomes = JSON.parse(savedOutcomes);
+        if (g_outcomes.length > 0) {
+            if (g_outcomes[0] === 'Tails') {
                 document.getElementById("coin").style.transform = "rotateY(180deg)";
-            } else if (outcomes[0] === 'Sides') {
-                document.getElementById("coin").style.transform = `rotateY(${180 * sideAngle}deg)`;
+            } else if (g_outcomes[0] === 'Sides') {
+                document.getElementById("coin").style.transform = `rotateY(${180 * g_sideAngle}deg)`;
             }
         }
     }
 }
 
 function playTossSound() {
+    if (g_mute === "true") { return }
+
     const audio = new Audio('public/audio/coin-flip.mp3');
 
     audio.play().catch(error => {
@@ -274,16 +328,14 @@ function playTossSound() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', initCoinToss);
-
 
 
 
 // Pre Plan Leaving Time functions
-let AlarmOn = false
+let g_AlarmOn = false
 function toggleAlarm() {
-    AlarmOn = !AlarmOn;
-    if (AlarmOn) {
+    g_AlarmOn = !g_AlarmOn;
+    if (g_AlarmOn) {
         const btn = document.getElementById("toggleAlarmBtn");
         showToast("Alarm is On ⏰🔔", "ℹ️ Info");
         btn.innerHTML = "Turn Off Alarm ⏰🔕";
@@ -312,7 +364,7 @@ function timeLeft() {
         document.getElementById("timeLeft").innerHTML = `Hustle! Hustle! There's only ${Math.floor(timeLeft / 60)} h ${timeLeft % 60} m ${59 - currentTime.getSeconds()} s left 🧑‍💻☕!`;
     } else {
         document.getElementById("timeLeft").innerHTML = `What are you still waiting for, isn't it time to leave 😁?`;
-        if (AlarmOn) { showToast("Let's Go...❗❗", "<h2>🔔</h2>", false) };
+        if (g_AlarmOn) { showToast("Let's Go...❗❗", "<h2>🔔</h2>", false) };
     }
 }
 function validateLunch() {
@@ -390,6 +442,6 @@ function resetAll() {
     document.getElementById("lunchEnd-24").innerHTML = "12:30 Military time";
     document.getElementById("leavingTime").value = "16:30";
     document.getElementById("leavingTime-24").innerHTML = "16:30 Military time";
-    AlarmOn = false;
+    g_AlarmOn = false;
     hideWarning();
 }

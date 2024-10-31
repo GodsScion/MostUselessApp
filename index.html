@@ -126,9 +126,14 @@ Version: 1.1.2
                                 the coin! Just don't blame me for consequences or if it lands on it's sides</p>
                         </div>
                         <div class="p-1">
-                            <button id="tossButton" class="btn btn-primary">Toss 💫</button>
+                            <button id="tossButton" class="btn btn-primary">
+                                Toss 💫 
+                                <span id="tossButtonSpinner" class="spinner-border spinner-border-sm" hidden></span>
+                            </button>
                         </div>
                     </div>
+
+                    <button id="tossMuteButton" class="btn"></button>                    
 
                     <div class="d-flex justify-content-center align-items-center mb-4">
                         <div id="coin-container" class="me-3">
@@ -264,7 +269,7 @@ Version: 1.1.2
 
     <script>
         let app = localStorage.getItem("app")
-        if (app !== "changeText") {
+        if (app && app !== "changeText") {
             document.getElementById(app).classList.add("active")
             document.getElementById(app + "-tab").classList.add("show", "active")
             document.getElementById("changeText").classList.remove("active")
