@@ -127,13 +127,13 @@ Version: 1.1.2
                         </div>
                         <div class="p-1">
                             <button id="tossButton" class="btn btn-primary">
-                                Toss 💫 
+                                Toss 💫
                                 <span id="tossButtonSpinner" class="spinner-border spinner-border-sm" hidden></span>
                             </button>
                         </div>
                     </div>
 
-                    <button id="tossMuteButton" class="btn"></button>                    
+                    <button id="tossMuteButton" class="btn">Loading...</button>
 
                     <div class="d-flex justify-content-center align-items-center mb-4">
                         <div id="coin-container" class="me-3">
@@ -189,20 +189,24 @@ Version: 1.1.2
                     </div>
                     <br>
 
-                    <label for="targetHrs" class="form-label">How many hours are you planning to work for (Work hrs)
+                    <label for="targetTime" class="form-label">How many hours are you planning to work for (Work hrs)
                         ⏳?</label>
-                    <div class="d-flex ">
+
+                    <fieldset id="targetTime" class="d-flex">
                         <input id="targetHrs" type="number" class="form-control w-10 p-1" value="8" min="0" max="12"
                             step="1" onfocus="this.previousValue = this.value"
                             onkeydown="this.previousValue = this.value"
                             oninput="validity.valid || (value = this.previousValue); if(value === null || value === undefined || value === '') {value = '0'}; calLeaveTime();">
-                        <p class="m-2">hrs</p>
+                        <label for="targetHrs" class="m-2">hrs</label>
                         <input id="targetMin" type="number" class="form-control w-10 p-1" value="00" min="0" max="59"
                             step="1" onfocus="this.previousValue = this.value"
                             onkeydown="this.previousValue = this.value"
                             oninput="validity.valid || (value = this.previousValue); if(value === null || value === undefined || value === '') {value = '0'}; calLeaveTime();">
-                        <p class="m-2">min</p>
-                    </div>
+                        <label for="targetMin" class="m-2">min</label>
+                    </fieldset>
+
+
+
                     <br>
                     <p class="form-label">How much time are you planning to take lunch for ⏱️?</p>
                     <p id="suggestLunch"></p>
