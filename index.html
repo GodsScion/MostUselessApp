@@ -191,13 +191,12 @@ Version: 1.1.2
 
                     <label for="targetTime" class="form-label">How many hours are you planning to work for (Work hrs)
                         ⏳?</label>
-
                     <fieldset id="targetTime" class="d-flex">
                         <input id="targetHrs" type="number" class="form-control w-10 p-1" value="8" min="0" max="12"
                             step="1" onfocus="this.previousValue = this.value"
                             onkeydown="this.previousValue = this.value"
                             oninput="validity.valid || (value = this.previousValue); if(value === null || value === undefined || value === '') {value = '0'}; calLeaveTime();">
-                        <label for="targetHrs" class="m-2">hrs</label>
+                        <label for="targetHrs" class="m-2 me-3">hrs</label>
                         <input id="targetMin" type="number" class="form-control w-10 p-1" value="00" min="0" max="59"
                             step="1" onfocus="this.previousValue = this.value"
                             onkeydown="this.previousValue = this.value"
